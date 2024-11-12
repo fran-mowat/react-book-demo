@@ -1,23 +1,59 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import SearchBar from './Components/SearchBar';
+import BookList from './Components/BookList';
+import FavouriteList from './Components/FavouriteList';
 
-function App() {
+const App = () => {
+  const [books, setBooks] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [favourites, setFavourites] = useState([]);
+
+  //fetch data from books.json
+  useEffect(() => { 
+    fetch("./books.json")
+    .then((response) => response.json())
+    .then((data) => setBooks(data.books))
+    .catch((error) => console.error("Error fetching data: ", error));
+  }, [])
+
+  const handleSearch = (term) => {
+    setSearchTerm(term)
+  };
+
+  const filteredBooks = books.filter((book) => book.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleAddToFavourites = (book) => {
+    console.log(favourites.book);
+    if (!favourites.includes(book)){
+      setFavourites([...favourites, book]);
+    }
+  };
+
+  //save favourites to local storage whenever it changes 
+  useEffect(() => {
+    localStorage.setItem("favourites", JSON.stringify(favourites));
+  }, [favourites]);
+
+  //clear favourites list 
+  const handleClearFavourites = () => {
+    setFavourites([]);
+    localStorage.removeItem("favourites"); //clear local storage 
+  };
+
+  //load favourites from local storage on component mount 
+  useEffect(() => {
+    const savedFavourites = localStorage.getItem("favourites");
+    if (savedFavourites) {
+      setFavourites(JSON.parse(savedFavourites));
+    }
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <SearchBar handleSearch={handleSearch} />
+      <BookList books={filteredBooks} handleAddToFavourites={handleAddToFavourites}/>
+      <FavouriteList favourites={favourites} handleClearFavourites={handleClearFavourites}/>
     </div>
   );
 }
