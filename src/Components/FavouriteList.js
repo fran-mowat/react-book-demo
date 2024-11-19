@@ -1,4 +1,5 @@
 import React from "react";
+import Card from "./Card";
 
 const FavouriteList = ({favourites, handleClearFavourites}) => {
     console.log(favourites)
@@ -7,15 +8,16 @@ const FavouriteList = ({favourites, handleClearFavourites}) => {
             <div>
                 <h2>
                     Favourite Books 
-                    <button onClick={handleClearFavourites}>
+                    <button onClick={handleClearFavourites} style={{ marginLeft: '10px' }}>
                         Clear Favourite List
                     </button>
                 </h2>
-                <ul>
+                <div className="card-container">
                     {favourites.map((book) => (
-                        <li key={book.title}>{book.title} by {book.author}</li>
+                        <Card key={book.title} book={book} />
                     ))}
-                </ul>
+                </div>
+                <hr />
             </div>
         );
     } else{
