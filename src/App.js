@@ -34,7 +34,9 @@ const App = () => {
 
   //save favourites to local storage whenever it changes 
   useEffect(() => {
-    localStorage.setItem("favourites", JSON.stringify(favourites));
+    if (favourites.length > 0){
+      localStorage.setItem("favourites", JSON.stringify(favourites));
+    }
   }, [favourites]);
 
   //clear favourites list 
